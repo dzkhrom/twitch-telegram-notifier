@@ -17,7 +17,7 @@ async function main() {
   const token = tokenResponse.data.access_token;
 
   await axios.delete(
-    "https://api.twitch.tv/helix/eventsub/subscriptions?id=14f5067b-7b6e-4d78-a07a-97172987a06f",
+    "https://api.twitch.tv/helix/eventsub/subscriptions?id=71161135-2c92-4c11-99e2-c68fa9c5f146",
     {
       headers: {
         Authorization: `Bearer ${token}`,

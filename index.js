@@ -19,11 +19,6 @@ async function sendTelegramMessage(text) {
 }
 
 app.post("/webhook", async (req, res) => {
-
-    console.log("WEBHOOK HIT");
-
-    console.log("HEADERS:");
-    console.log(req.headers);
   
     console.log("BODY:");
     console.log(JSON.stringify(req.body, null, 2));
@@ -33,7 +28,11 @@ app.post("/webhook", async (req, res) => {
 
   console.log(JSON.stringify(body, null, 2));
 
-  if (body.challenge) {
+  if (body?.challenge) {
+    console.log("CHALLENGE RECEIVED:", body.challenge);
+  
+    res.set("Content-Type", "text/plain");
+  
     return res.status(200).send(body.challenge);
   }
 
