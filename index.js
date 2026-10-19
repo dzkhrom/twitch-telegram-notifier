@@ -19,6 +19,10 @@ async function sendTelegramMessage(text) {
 }
 
 app.post("/webhook", async (req, res) => {
+
+  console.log("WEBHOOK HIT");
+  console.log(req.headers);
+  console.log(req.body);
   const body = req.body;
 
   console.log(JSON.stringify(body, null, 2));
