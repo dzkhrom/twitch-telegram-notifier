@@ -7,6 +7,20 @@ const app = express();
 
 app.use(express.json());
 
+async function getStreamInfo(userId) {
+  const response = await axios.get(
+    `https://api.twitch.tv/helix/streams?user_id=${userId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${ACCESS_TOKEN}`,
+        "Client-Id": process.env.TWITCH_CLIENT_ID
+      }
+    }
+  );
+
+  return response.data.data[0];
+}
+
 async function sendTelegramMessage(text) {
   await axios.post(
     `https://api.telegram.org/bot${process.env.BOT_TOKEN}/sendMessage`,
@@ -19,9 +33,9 @@ async function sendTelegramMessage(text) {
 }
 
 app.post("/webhook", async (req, res) => {
-  
-    console.log("BODY:");
-    console.log(JSON.stringify(req.body, null, 2));
+
+  console.log("BODY:");
+  console.log(JSON.stringify(req.body, null, 2));
 
 
   const body = req.body;
@@ -30,9 +44,9 @@ app.post("/webhook", async (req, res) => {
 
   if (body?.challenge) {
     console.log("CHALLENGE RECEIVED:", body.challenge);
-  
+
     res.set("Content-Type", "text/plain");
-  
+
     return res.status(200).send(body.challenge);
   }
 
@@ -40,12 +54,18 @@ app.post("/webhook", async (req, res) => {
     const streamer = body.event.broadcaster_user_name;
     const login = body.event.broadcaster_user_login;
 
+    const streamInfo = await getStreamInfo(
+      body.event.broadcaster_user_id
+    );
+
     await sendTelegramMessage(
-      `TEXT="Хейхоу! Домашний, уютный стрим уже в эфире ✨
-
-          🎮 $TITLE
-
-          👉 https://twitch.tv/$TWITCH_USERNAME"`
+      `
+      "Хейхоу друзьяшки! Домашний, уютный стрим уже в эфире ✨
+      🔴 <br /><b>${streamer}</b> уже в эфире!
+      
+      <br />🎮${streamInfo.game_name}
+      <br /> Начинаем сегодня с ${streamInfo.title}
+      Давай к нам 👉 https://twitch.tv/${login}`
     );
   }
 
