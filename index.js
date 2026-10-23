@@ -8,11 +8,26 @@ const app = express();
 app.use(express.json());
 
 async function getStreamInfo(userId) {
+
+  const tokenResponse = await axios.post(
+    "https://id.twitch.tv/oauth2/token",
+    null,
+    {
+      params: {
+        client_id: process.env.TWITCH_CLIENT_ID,
+        client_secret: process.env.TWITCH_CLIENT_SECRET,
+        grant_type: "client_credentials"
+      }
+    }
+  );
+
+  const accessToken = tokenResponse.data.access_token;
+
   const response = await axios.get(
     `https://api.twitch.tv/helix/streams?user_id=${userId}`,
     {
       headers: {
-        Authorization: `Bearer ${ACCESS_TOKEN}`,
+        Authorization: `Bearer ${accessToken}`,
         "Client-Id": process.env.TWITCH_CLIENT_ID
       }
     }
