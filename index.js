@@ -42,6 +42,7 @@ async function sendTelegramMessage(text) {
     {
       chat_id: process.env.CHANNEL_ID,
       text,
+      parse_mode: "HTML",
       disable_web_page_preview: false
     }
   );
@@ -74,13 +75,12 @@ app.post("/webhook", async (req, res) => {
     );
 
     await sendTelegramMessage(
-      `
-      "Хейхоу друзьяшки! Домашний, уютный стрим уже в эфире ✨
-      🔴 <br /><b>${streamer}</b> уже в эфире!
-      
-      <br />🎮${streamInfo.game_name}
-      <br /> Начинаем сегодня с ${streamInfo.title}
-      Давай к нам 👉 https://twitch.tv/${login}`
+      `Хейхоу друзьяшки! Домашний, уютный стрим уже в эфире ✨
+🔴 <b>${streamer}</b> уже в эфире!
+
+🎮 ${streamInfo.game_name}
+Начинаем сегодня с ${streamInfo.title}
+Давай к нам 👉 https://twitch.tv/${login}`
     );
   }
 
